@@ -4,16 +4,15 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 // Navigation
 import { useNavigation } from '@react-navigation/core'
 
-const NoteScreen = () => { 
+const HomeScreen = () => { 
   const nav = useNavigation()
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={() => { nav.goBack() }}>
-        <Text>Back</Text>
+      <Text>HomeScreen</Text>
+      <TouchableOpacity onPress={() => { nav.navigate('NoteScreen') }}>
+        <Text>Add Note</Text>
       </TouchableOpacity>
-      
-      <Text>NoteScreen</Text>
     </View>
   ) 
 }
@@ -26,4 +25,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default NoteScreen
+export default HomeScreen
