@@ -11,6 +11,8 @@ import HomeScreen from './screens/HomeScreen'
 import NoteScreen from './screens/NoteScreen'
 import WorkCategoryScreen from './screens/WorkCategoryScreen'
 import IdeasCategoryScreen from './screens/IdeasCategoryScreen'
+import SettingsScreen from './screens/SettingsScreen'
+// Comp
 import Catgories from './components/Categories'
 
 export default function App() {
@@ -25,12 +27,13 @@ export default function App() {
             <Catgories />
           </View>
           
-          <View style={{ flex: 1, width: '100%' }}>
+          <View style={{ flex: 1 }}>
             <Stack.Navigator>
               <Stack.Screen name="HomeScreen" component={HomeScreen} options={{ headerShown: false }} />
               <Stack.Screen name="NoteScreen" component={NoteScreen} options={{ headerShown: false }} />
               <Stack.Screen name="WorkCategoryScreen" component={WorkCategoryScreen} options={{ headerShown: false }} />
               <Stack.Screen name="IdeasCategoryScreen" component={IdeasCategoryScreen} options={{ headerShown: false }} />
+              <Stack.Screen name="SettingsScreen" component={SettingsScreen} options={{ headerShown: false }} />
             </Stack.Navigator>
           </View>
 

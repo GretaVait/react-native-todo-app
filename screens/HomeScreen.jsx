@@ -3,14 +3,18 @@ import React from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
 // Navigation
 import { useNavigation } from '@react-navigation/core'
+// Lib
 import { Icon } from 'react-native-elements'
+// Colors
 import colors from '../constants/colors'
+// Comp
+import Container from '../components/Container'
 
 const HomeScreen = () => { 
   const nav = useNavigation()
 
   return (
-    <View style={styles.container}>
+    <Container>
       <View style={styles.header}>
         <Text style={styles.title}>Reminders</Text>
         <TouchableOpacity style={styles.menu}>
@@ -21,17 +25,11 @@ const HomeScreen = () => {
       <TouchableOpacity style={ styles.addNoteButton } onPress={() => { nav.navigate('NoteScreen') }}>
         <Icon name="add-outline" type="ionicon" size={48} color="white" />
       </TouchableOpacity>
-    </View>
+    </Container>
   ) 
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingVertical: 32,
-    paddingHorizontal: 8,
-    backgroundColor: 'white'
-  },
   header: {
     flexDirection: 'row',
     alignItems: 'center',

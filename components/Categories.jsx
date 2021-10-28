@@ -1,8 +1,13 @@
 // Base
 import React from 'react'
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+// Navigation
+import { useNavigation } from '@react-navigation/core'
+// Colors
+import colors from '../constants/colors'
 
 const Catgories = () => {
+  const nav = useNavigation()
 
   const data = [
     {
@@ -31,16 +36,16 @@ const Catgories = () => {
       <View>
         {
           data.map(item => (
-            <View key={item.id} style={{ ...styles.category, backgroundColor: item.color }}>
+            <TouchableOpacity key={item.id} style={{ ...styles.category, backgroundColor: item.color }} onPress={() => { nav.navigate(item.screen) }}>
               <Text style={styles.categoryText}>{item.title}</Text>
-            </View>
+            </TouchableOpacity>
           ))
         }
       </View>
 
-      <View style={{ ...styles.category, backgroundColor: '#DEDEDE', marginBottom: 0 }}>
+      <TouchableOpacity style={{ ...styles.category, backgroundColor: '#DEDEDE', marginBottom: 0 }} onPress={() => { nav.navigate('SettingsScreen') }}>
         <Text style={styles.categoryText}>Settings</Text>
-      </View>
+      </TouchableOpacity>
 
     </View>
   ) 
@@ -48,7 +53,7 @@ const Catgories = () => {
 
 const styles = StyleSheet.create({
   categoriesList: {
-    backgroundColor: '#4C416B',
+    backgroundColor: colors.purple,
     height: '100%',
     paddingVertical: 8,
     justifyContent: 'space-between',
