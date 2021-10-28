@@ -11,6 +11,7 @@ import HomeScreen from './screens/HomeScreen'
 import NoteScreen from './screens/NoteScreen'
 import WorkCategoryScreen from './screens/WorkCategoryScreen'
 import IdeasCategoryScreen from './screens/IdeasCategoryScreen'
+import Catgories from './components/Categories'
 
 export default function App() {
   const Stack = createNativeStackNavigator()
@@ -19,12 +20,20 @@ export default function App() {
     <NavigationContainer>
       <SafeAreaProvider>
         <KeyboardAvoidingView behavior="height" style={styles.container}>
-          <Stack.Navigator>
-            <Stack.Screen name="HomeScreen" component={HomeScreen} options={{ headerShown: false }} />
-            <Stack.Screen name="NoteScreen" component={NoteScreen} options={{ headerShown: false }} />
-            <Stack.Screen name="WorkCategoryScreen" component={WorkCategoryScreen} options={{ headerShown: false }} />
-            <Stack.Screen name="IdeasCategoryScreen" component={IdeasCategoryScreen} options={{ headerShown: false }} />
-          </Stack.Navigator>
+          
+          <View style={{ width: 32 }}>
+            <Catgories />
+          </View>
+          
+          <View style={{ flex: 1, width: '100%' }}>
+            <Stack.Navigator>
+              <Stack.Screen name="HomeScreen" component={HomeScreen} options={{ headerShown: false }} />
+              <Stack.Screen name="NoteScreen" component={NoteScreen} options={{ headerShown: false }} />
+              <Stack.Screen name="WorkCategoryScreen" component={WorkCategoryScreen} options={{ headerShown: false }} />
+              <Stack.Screen name="IdeasCategoryScreen" component={IdeasCategoryScreen} options={{ headerShown: false }} />
+            </Stack.Navigator>
+          </View>
+
         </KeyboardAvoidingView>
       </SafeAreaProvider>
     </NavigationContainer>
@@ -33,6 +42,9 @@ export default function App() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flexDirection: 'row',
+    flex: 1,
+    paddingTop: 24,
+    backgroundColor: 'white'
   },
 });
