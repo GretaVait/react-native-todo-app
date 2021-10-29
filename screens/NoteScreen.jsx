@@ -10,21 +10,35 @@ import Container from '../components/Container'
 import ButtonSmall from '../components/ButtonSmall'
 // Colors
 import colors from '../constants/colors'
+import { useDispatch } from 'react-redux'
+import { addNote } from '../redux/actions/noteActions'
+import { useSelector } from 'react-redux'
 
 const NoteScreen = () => { 
   const nav = useNavigation()
+  const dispatch = useDispatch()
+  const note = useSelector(state => state.note)
+
   const [title, setTitle] = useState("")
-  const [note, setNote] = useState("")
+  const [body, setBody] = useState("")
+
+  const handleAddNote = () => {
+    if (title || body) {
+      dispatch(addNote({ title: title, body: body }))
+    }
+    // 
+    nav.goBack()
+  }
 
   return (
     <Container>
       <View style={styles.actions}>
         <View style={styles.actionsLeft}>
-          <ButtonSmall handleChange={() => { nav.goBack() }} style={styles.actionsButton}>
+          <ButtonSmall handleChange={handleAddNote} style={styles.actionsButton}>
             <Icon name="arrow-back-outline" type="ionicon" size={20} />
           </ButtonSmall>
 
-          <ButtonSmall>
+          <ButtonSmall handleChange={() => { nav.goBack() }}>
             <Icon name="trash-outline" type="ionicon" size={20} />
           </ButtonSmall>
         </View>
@@ -45,8 +59,8 @@ const NoteScreen = () => {
 
         <TextInput 
           style={styles.body}
-          onChangeText={setNote}
-          value={note}
+          onChangeText={setBody}
+          value={body}
           placeholder="Write your note here..."
         />
       </View>

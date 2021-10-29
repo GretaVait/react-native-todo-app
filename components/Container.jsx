@@ -14,8 +14,8 @@ const Container = ({ children }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingVertical: 8,
-    paddingHorizontal: 8,
+    paddingVertical: 16,
+    paddingHorizontal: 16,
     backgroundColor: 'white'
   }
 })

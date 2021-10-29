@@ -1,16 +1,20 @@
 // Actions
-export const addNote = (note) => ({
+const addNote = (note) => ({
   type: "ADD_NOTE",
   note
 })
 
-export const deleteNote = (noteId) => ({
+const deleteNote = (noteId) => ({
   type: "DELETE_NOTE",
   noteId
 })
 
-export const completeNote = () => ({
+const completeNote = () => ({
   type: "COMPLETE_NOTE"
 })
 
-export { addNote, deleteNote, completeNote }
+const updateNote = () => ({
+  type: "UPDATE_NOTE"
+})
+
+export { addNote, deleteNote, completeNote, updateNote }
