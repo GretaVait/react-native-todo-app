@@ -15,7 +15,7 @@ const ButtonSmall = ({ children, style, handleChange }) => {
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: colors.lightGrey,
+    backgroundColor: colors.grey,
     width: 48,
     height: 48,
     alignItems: 'center',

@@ -1,6 +1,6 @@
 // Base
-import React, { useEffect } from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, SectionList, ScrollView } from 'react-native'
 // Lib
 import { Icon } from 'react-native-elements'
 // Navigation
@@ -15,15 +15,29 @@ import Note from '../components/Note'
 import { useSelector } from 'react-redux'
 import { completeNote } from '../redux/actions/noteActions'
 import { useDispatch } from 'react-redux'
+import Title from '../components/Title'
 
 const HomeScreen = () => { 
   const nav = useNavigation()
   const dispatch = useDispatch()
   const notes = useSelector(state => state.notes)
+  const [notesList, setNoteList] = useState([])
 
   useEffect(() => {
     console.log(notes, 'note')
+
+    setNoteList([
+      {
+        title: 'pinned',
+        data: notes.filter(note => note.pinned === true)
+      },
+      {
+        title: 'upcoming',
+        data: notes.filter(note => note.pinned === false)
+      }
+    ])
   }, [notes])
+  
 
   return (
     <Container>
@@ -37,18 +51,22 @@ const HomeScreen = () => {
 
       </View>
 
-      <FlatList 
-        data={notes}
-        keyExtractor={item => item.id}
-        renderItem={({ item: { id, title, body, completed } }) => (
+      <SectionList
+        sections={notesList}
+        keyExtractor={(item, index) => item + index}
+        renderItem={({ item }) => (
           <Note 
-            title={title}
-            body={body}
+            title={item.title}
+            body={item.body}
             date="Today, 4:30PM"
-            completed={completed}
-            handleCompleteNote={() => { dispatch(completeNote(id)) }}
+            completed={item.completed}
+            handleCompleteNote={() => { dispatch(completeNote(item.id)) }}
           />
         )}
+        renderSectionHeader={({ section: { title }, section }) => (
+          section.data.length > 0 &&
+            <Title style={styles.subtitle}>{title}</Title>
+        )} 
       />
 
       <TouchableOpacity style={ styles.addNoteButton } onPress={() => { nav.navigate('NoteScreen') }}>
@@ -84,6 +102,9 @@ const styles = StyleSheet.create({
     width: 20,
     height: 2,
     backgroundColor: colors.black,
+  },
+  subtitle: {
+    marginBottom: 8
   }
 })
 

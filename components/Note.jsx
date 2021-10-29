@@ -14,10 +14,12 @@ const Note = ({ title, body, date, completed, handleCompleteNote }) => {
       <View style={{ ...styles.checkmark, backgroundColor: completed ? colors.purple : 'white', borderColor: completed ? 'white' : colors.purple }}>
         <Icon name="checkmark-outline" type="ionicon" size={16} color="white" style={{ opacity: completed ? 1 : 0 }} />
       </View>
-      <Text style={styles.noteTitle}>{title}</Text>
-      <Text style={styles.noteBody}>{body}</Text>
-      <View style={styles.noteDate}>
-        <Text style={styles.noteDateText}>{date}</Text>
+      <View style={{ opacity: completed ? .3 : 1 }}>
+        <Text style={styles.noteTitle}>{title}</Text>
+        <Text style={styles.noteBody}>{body}</Text>
+        <View style={styles.noteDate}>
+          <Text style={styles.noteDateText}>{date}</Text>
+        </View>
       </View>
     </TouchableOpacity>
   )
@@ -29,7 +31,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.lightGrey,
     padding: 16,
     borderRadius: 8,
-    alignItems: 'flex-start'
+    alignItems: 'flex-start',
+    marginBottom: 16
   },
   noteTitle: {
     color: colors.black,

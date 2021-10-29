@@ -27,7 +27,7 @@ export default (state = initialState, action) => {
           category: 'personal',
           completed: false,
           deleted: false,
-          pinned: false,
+          pinned: true,
           ...action.note
         }
       ]

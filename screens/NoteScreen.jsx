@@ -13,6 +13,8 @@ import colors from '../constants/colors'
 import { useDispatch } from 'react-redux'
 import { addNote } from '../redux/actions/noteActions'
 import { useSelector } from 'react-redux'
+import Title from '../components/Title'
+import Toggle from '../components/Toggle'
 
 const NoteScreen = () => { 
   const nav = useNavigation()
@@ -21,10 +23,11 @@ const NoteScreen = () => {
 
   const [title, setTitle] = useState("")
   const [body, setBody] = useState("")
+  const [toggle, setToggle] = useState(false)
 
   const handleAddNote = () => {
     if (title || body) {
-      dispatch(addNote({ title: title, body: body }))
+      dispatch(addNote({ title: title, body: body, pinned: toggle }))
     }
     // 
     nav.goBack()
@@ -64,6 +67,13 @@ const NoteScreen = () => {
           value={body}
           placeholder="Write your note here..."
           multiline={true}
+        />
+
+        <Title>Pinned</Title>
+        
+        <Toggle 
+          active={toggle}
+          handleToggle={() => { setToggle(prevState => { return !prevState }) }}
         />
       </View>
     </Container>
