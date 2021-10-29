@@ -13,11 +13,11 @@ import ButtonSmall from '../components/ButtonSmall'
 import Note from '../components/Note'
 // Redux
 import { useSelector } from 'react-redux'
-import { completeNote } from '../redux/actions/noteActions'
+import { completeNote, updateNote } from '../redux/actions/noteActions'
 import { useDispatch } from 'react-redux'
 import Title from '../components/Title'
 
-const HomeScreen = () => { 
+const HomeScreen = ({ navigation }) => { 
   const nav = useNavigation()
   const dispatch = useDispatch()
   const notes = useSelector(state => state.notes)
@@ -37,6 +37,12 @@ const HomeScreen = () => {
       }
     ])
   }, [notes])
+
+  // const handleEditNote = () => {
+  //   nav.navigate('NoteScreen'); 
+  //   dispatch(updateNote(item.id)); 
+  //   console.log(item.id, 'id')
+  // }
   
 
   return (
@@ -60,7 +66,10 @@ const HomeScreen = () => {
             body={item.body}
             date="Today, 4:30PM"
             completed={item.completed}
+            id={item.id}
             handleCompleteNote={() => { dispatch(completeNote(item.id)) }}
+            navigation={navigation}
+            // handleEditNote={handleEditNote}
           />
         )}
         renderSectionHeader={({ section: { title }, section }) => (

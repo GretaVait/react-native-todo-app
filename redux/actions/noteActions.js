@@ -14,8 +14,10 @@ const completeNote = (noteId) => ({
   noteId
 })
 
-const updateNote = () => ({
-  type: "UPDATE_NOTE"
+const updateNote = ({ noteId, note }) => ({
+  type: "UPDATE_NOTE",
+  noteId,
+  note
 })
 
 export { addNote, deleteNote, completeNote, updateNote }

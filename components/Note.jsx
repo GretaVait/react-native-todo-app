@@ -4,13 +4,26 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 // Lib
 import { Icon } from 'react-native-elements'
 import { useSelector } from 'react-redux'
+// Navigation
+import { CommonActions } from '@react-navigation/native'
 // Colors
 import colors from '../constants/colors'
 
-const Note = ({ title, body, date, completed, handleCompleteNote }) => {
+const Note = ({ navigation, title, body, date, completed, id, handleCompleteNote }) => {
+
+  const handleEditNote = (id) => {
+    navigation.dispatch(
+      CommonActions.navigate({
+        name: 'NoteScreen',
+        params: {
+          noteId: id
+        }
+      })
+    )
+  }
 
   return (
-    <TouchableOpacity style={styles.note} onPress={handleCompleteNote}>
+    <TouchableOpacity style={styles.note} onPress={handleCompleteNote} onLongPress={() => { handleEditNote(id) }}>
       <View style={{ ...styles.checkmark, backgroundColor: completed ? colors.purple : 'white', borderColor: completed ? 'white' : colors.purple }}>
         <Icon name="checkmark-outline" type="ionicon" size={16} color="white" style={{ opacity: completed ? 1 : 0 }} />
       </View>
