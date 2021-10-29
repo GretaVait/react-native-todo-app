@@ -1,14 +1,15 @@
 // Base
 import React from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
-// Navigation
-import { useNavigation } from '@react-navigation/core'
 // Lib
 import { Icon } from 'react-native-elements'
+// Navigation
+import { useNavigation } from '@react-navigation/core'
 // Colors
 import colors from '../constants/colors'
 // Comp
 import Container from '../components/Container'
+import ButtonSmall from '../components/ButtonSmall'
 
 const HomeScreen = () => { 
   const nav = useNavigation()
@@ -17,10 +18,12 @@ const HomeScreen = () => {
     <Container>
       <View style={styles.header}>
         <Text style={styles.title}>Reminders</Text>
-        <TouchableOpacity style={styles.menu}>
+
+        <ButtonSmall>
           <View style={{ ...styles.menuLine, marginBottom: 4 }} />
           <View style={styles.menuLine} />
-        </TouchableOpacity>
+        </ButtonSmall>
+
       </View>
       <TouchableOpacity style={ styles.addNoteButton } onPress={() => { nav.navigate('NoteScreen') }}>
         <Icon name="add-outline" type="ionicon" size={48} color="white" />
@@ -49,14 +52,6 @@ const styles = StyleSheet.create({
     height: 64,
     alignItems: 'center',
     justifyContent: 'center'
-  },
-  menu: {
-    backgroundColor: colors.lightGrey,
-    width: 48,
-    height: 48,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 16
   },
   menuLine: {
     width: 20,
