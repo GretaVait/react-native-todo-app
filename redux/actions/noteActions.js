@@ -9,8 +9,9 @@ const deleteNote = (noteId) => ({
   noteId
 })
 
-const completeNote = () => ({
-  type: "COMPLETE_NOTE"
+const completeNote = (noteId) => ({
+  type: "COMPLETE_NOTE",
+  noteId
 })
 
 const updateNote = () => ({

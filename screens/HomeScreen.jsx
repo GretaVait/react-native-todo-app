@@ -13,9 +13,12 @@ import ButtonSmall from '../components/ButtonSmall'
 import Note from '../components/Note'
 // Redux
 import { useSelector } from 'react-redux'
+import { completeNote } from '../redux/actions/noteActions'
+import { useDispatch } from 'react-redux'
 
 const HomeScreen = () => { 
   const nav = useNavigation()
+  const dispatch = useDispatch()
   const notes = useSelector(state => state.notes)
 
   useEffect(() => {
@@ -37,11 +40,13 @@ const HomeScreen = () => {
       <FlatList 
         data={notes}
         keyExtractor={item => item.id}
-        renderItem={({ item: { title, body } }) => (
+        renderItem={({ item: { id, title, body, completed } }) => (
           <Note 
             title={title}
             body={body}
             date="Today, 4:30PM"
+            completed={completed}
+            handleCompleteNote={() => { dispatch(completeNote(id)) }}
           />
         )}
       />

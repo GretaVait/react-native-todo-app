@@ -1,24 +1,25 @@
 // Base
 import React from 'react'
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 // Lib
 import { Icon } from 'react-native-elements'
+import { useSelector } from 'react-redux'
 // Colors
 import colors from '../constants/colors'
 
-const Note = ({ title, body, date }) => {
+const Note = ({ title, body, date, completed, handleCompleteNote }) => {
 
   return (
-    <View style={styles.note}>
-      <View style={{ ...styles.checkmark, backgroundColor: true ? colors.purple : 'white', borderColor: true ? colors.purple : 'white'}}>
-        <Icon name="checkmark-outline" type="ionicon" size={16} color="white" style={{ opacity: true ? 1 : 0 }} />
+    <TouchableOpacity style={styles.note} onPress={handleCompleteNote}>
+      <View style={{ ...styles.checkmark, backgroundColor: completed ? colors.purple : 'white', borderColor: completed ? 'white' : colors.purple }}>
+        <Icon name="checkmark-outline" type="ionicon" size={16} color="white" style={{ opacity: completed ? 1 : 0 }} />
       </View>
       <Text style={styles.noteTitle}>{title}</Text>
       <Text style={styles.noteBody}>{body}</Text>
       <View style={styles.noteDate}>
         <Text style={styles.noteDateText}>{date}</Text>
       </View>
-    </View>
+    </TouchableOpacity>
   )
 }
 
@@ -58,6 +59,7 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     borderRadius: 4,
+    borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center'
   }

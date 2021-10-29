@@ -55,6 +55,7 @@ const NoteScreen = () => {
           onChangeText={setTitle}
           value={title}
           placeholder="Note's Title"
+          multiline={true}
         />
 
         <TextInput 
@@ -62,6 +63,7 @@ const NoteScreen = () => {
           onChangeText={setBody}
           value={body}
           placeholder="Write your note here..."
+          multiline={true}
         />
       </View>
     </Container>
