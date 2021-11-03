@@ -5,16 +5,17 @@ import { View, Text, StyleSheet, TouchableOpacity, TextInput } from 'react-nativ
 import { Icon } from 'react-native-elements'
 // Navigation
 import { useNavigation } from '@react-navigation/core'
-// Comp
-import Container from '../components/Container'
-import ButtonSmall from '../components/ButtonSmall'
-// Colors
-import colors from '../constants/colors'
+// Redux
 import { useDispatch } from 'react-redux'
 import { addNote, updateNote } from '../redux/actions/noteActions'
 import { useSelector } from 'react-redux'
+// Comp
+import Container from '../components/Container'
+import ButtonSmall from '../components/ButtonSmall'
 import Title from '../components/Title'
 import Toggle from '../components/Toggle'
+// Colors
+import colors from '../constants/colors'
 
 const NoteScreen = ({ route }) => { 
   const nav = useNavigation()
