@@ -15,11 +15,11 @@ const IdeasCategoryScreen = ({ navigation }) => {
     setNoteList([
       {
         title: 'Pinned',
-        data: sortedNotes.filter(note => note.pinned === true && note.category === 'work')
+        data: sortedNotes.filter(note => note.pinned === true && note.category === 'ideas')
       },
       {
         title: 'Upcoming',
-        data: sortedNotes.filter(note => note.pinned === false && note.category === 'work')
+        data: sortedNotes.filter(note => note.pinned === false && note.category === 'ideas')
       }
     ])
   }, [notes])

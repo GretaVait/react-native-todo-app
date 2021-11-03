@@ -1,5 +1,5 @@
 // Base
-import React, { useEffect } from 'react'
+import React from 'react'
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 // Navigation
 import { useNavigation } from '@react-navigation/core'
