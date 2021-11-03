@@ -26,15 +26,16 @@ const HomeScreen = ({ navigation }) => {
 
   useEffect(() => {
     console.log(notes, 'note')
+    const sortedNotes = notes.sort((a, b) => { return b.id - a.id })
 
     setNoteList([
       {
         title: 'Pinned',
-        data: notes.filter(note => note.pinned === true)
+        data: sortedNotes.filter(note => note.pinned === true)
       },
       {
         title: 'Upcoming',
-        data: notes.filter(note => note.pinned === false)
+        data: sortedNotes.filter(note => note.pinned === false)
       }
     ])
   }, [notes])
