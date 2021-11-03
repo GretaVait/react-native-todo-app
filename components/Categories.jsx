@@ -1,20 +1,26 @@
 // Base
-import React from 'react'
+import React, { useEffect } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 // Navigation
 import { useNavigation } from '@react-navigation/core'
+// Redux
+import { useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
+import { toggleCategory } from '../redux/actions/categoryActions'
 // Colors
 import colors from '../constants/colors'
 
-const Catgories = () => {
+const Catgories = ({ active }) => {
   const nav = useNavigation()
+  const dispatch = useDispatch()
+  const category = useSelector(state => state.category)
 
   const data = [
     {
       id: 456,
       title: 'Personal',
       screen: 'HomeScreen',
-      color: '#FFF'
+      color: '#9CC9E7'
     },
     {
       id: 123,
@@ -30,13 +36,18 @@ const Catgories = () => {
     },
   ]
 
+  const handleCategoryPress = (screen, category) => {
+    nav.navigate(screen)
+    dispatch(toggleCategory(category))
+  }
+
   return (
     <View style={styles.categoriesList}>
 
       <View>
         {
           data.map(item => (
-            <TouchableOpacity key={item.id} style={{ ...styles.category, backgroundColor: item.color }} onPress={() => { nav.navigate(item.screen) }}>
+            <TouchableOpacity key={item.id} style={{ ...styles.category, backgroundColor: category.activeItem === item.title ? '#FFF' : item.color }} onPress={() => { handleCategoryPress(item.screen, item.title) }}>
               <Text style={styles.categoryText}>{item.title}</Text>
             </TouchableOpacity>
           ))

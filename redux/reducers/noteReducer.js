@@ -24,7 +24,7 @@ export default (state = initialState, action) => {
           body: '',
           date: 0,
           file: [],
-          category: 'personal',
+          category: '',
           completed: false,
           deleted: false,
           pinned: true,

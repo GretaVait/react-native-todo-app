@@ -25,7 +25,8 @@ const NoteScreen = ({ route }) => {
   const [note, setNote] = useState({
     title: '',
     body: '',
-    pinned: false
+    pinned: false,
+    category: 'personal'
   })
 
   useEffect(() => {
@@ -35,7 +36,8 @@ const NoteScreen = ({ route }) => {
       setNote({
         title: noteToEdit[0]?.title,
         body: noteToEdit[0]?.body,
-        pinned: noteToEdit[0]?.pinned
+        pinned: noteToEdit[0]?.pinned,
+        category: noteToEdit[0]?.category
       })
     }
   }, [route.params?.noteId])
@@ -44,7 +46,8 @@ const NoteScreen = ({ route }) => {
     const newNote = {
       title: note.title, 
       body: note.body || '', 
-      pinned: note.pinned
+      pinned: note.pinned,
+      category: note.category
     }
     if (route.params?.noteId) {
       dispatch(updateNote({ noteId: route.params.noteId, note: newNote }))
@@ -120,10 +123,56 @@ const NoteScreen = ({ route }) => {
             }))
           }}
         />
+
+        <Title>Category</Title>
+        <View style={styles.categoriesList}>
+          <CategoryItem 
+            title="Personal" 
+            color="#9CC9E7" 
+            active={note.category === 'personal'} 
+            onSelect={() => {
+              setNote((prevState) => ({
+                ...prevState,
+                category: 'personal'
+              }))
+            }} 
+          />
+          <CategoryItem 
+            title="Work" 
+            color="#F69595" 
+            active={note.category === 'work'} 
+            onSelect={() => {
+              setNote((prevState) => ({
+                ...prevState,
+                category: 'work'
+              }))
+            }} 
+          />
+          <CategoryItem 
+            title="Ideas" 
+            color="#9BBCC6" 
+            active={note.category === 'ideas'} 
+            onSelect={() => {
+              setNote((prevState) => ({
+                ...prevState,
+                category: 'ideas'
+              }))
+            }} 
+          />
+        </View>
       </View>
     </Container>
   ) 
 }
+
+const CategoryItem = ({ title, color, active, onSelect }) => (
+  <TouchableOpacity style={{ ...styles.category, backgroundColor: color }} onPress={onSelect}>
+    <View style={{ ...styles.categorySelected, opacity: active ? 1 : 0 }}>
+      <Icon name="checkmark-outline" type="ionicon" size={10} color="white" />
+    </View>
+    <Text style={styles.categoryText}>{title}</Text>
+  </TouchableOpacity>
+)
 
 const styles = StyleSheet.create({
   input: {
@@ -148,6 +197,32 @@ const styles = StyleSheet.create({
   },
   actionsButton: {
     marginRight: 8
+  },
+  categoriesList: {
+    flexDirection: 'row',
+    flexWrap: 'wrap'
+  },
+  category: {
+    position: 'relative',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 8,
+    marginRight: 16,
+  },
+  categoryText: {
+    color: colors.purple,
+    fontWeight: 'bold'
+  },
+  categorySelected: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'absolute',
+    top: -4,
+    right: -4,
+    backgroundColor: colors.purple,
+    borderRadius: 500,
+    width: 16,
+    height: 16
   }
 })
 

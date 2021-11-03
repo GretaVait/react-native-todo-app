@@ -1,28 +1,32 @@
 // Base
-import React from 'react'
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
-// Navigation
-import { useNavigation } from '@react-navigation/core'
+import React, { useEffect, useState } from 'react'
+// Redux
+import { useSelector } from 'react-redux'
+import Category from '../sections/Category'
 
-const IdeasCategoryScreen = () => { 
-  const nav = useNavigation()
+const IdeasCategoryScreen = ({ navigation }) => { 
+  const notes = useSelector(state => state.notes)
+  const [notesList, setNoteList] = useState([])
+
+  useEffect(() => {
+    console.log(notes, 'note')
+    const sortedNotes = notes.sort((a, b) => { return b.id - a.id })
+
+    setNoteList([
+      {
+        title: 'Pinned',
+        data: sortedNotes.filter(note => note.pinned === true && note.category === 'work')
+      },
+      {
+        title: 'Upcoming',
+        data: sortedNotes.filter(note => note.pinned === false && note.category === 'work')
+      }
+    ])
+  }, [notes])
 
   return (
-    <View style={styles.container}>
-      <Text>IdeasCategoryScreen</Text>
-      <TouchableOpacity onPress={() => { nav.navigate('NoteScreen') }}>
-        <Text>Add Note</Text>
-      </TouchableOpacity>
-    </View>
+    <Category navigation={navigation} title="Ideas" notes={notesList} />
   ) 
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingVertical: 32,
-    paddingHorizontal: 16
-  }
-})
 
 export default IdeasCategoryScreen
