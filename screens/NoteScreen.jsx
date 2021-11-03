@@ -7,7 +7,7 @@ import { Icon } from 'react-native-elements'
 import { useNavigation } from '@react-navigation/core'
 // Redux
 import { useDispatch } from 'react-redux'
-import { addNote, updateNote } from '../redux/actions/noteActions'
+import { addNote, deleteNote, updateNote } from '../redux/actions/noteActions'
 import { useSelector } from 'react-redux'
 // Comp
 import Container from '../components/Container'
@@ -31,7 +31,7 @@ const NoteScreen = ({ route }) => {
   useEffect(() => {
     if (route.params?.noteId) {
       const noteToEdit = notes.filter(note => note.id === route.params.noteId)
-      console.log(noteToEdit, 'noteToEdit')
+
       setNote({
         title: noteToEdit[0]?.title,
         body: noteToEdit[0]?.body,
@@ -47,11 +47,19 @@ const NoteScreen = ({ route }) => {
       pinned: note.pinned
     }
     if (route.params?.noteId) {
-      dispatch(updateNote({ noteId: route.params?.noteId, note: newNote }))
+      dispatch(updateNote({ noteId: route.params.noteId, note: newNote }))
     } else if (note.title || note.body) {
       dispatch(addNote(newNote))
     }
     // 
+    nav.goBack()
+  }
+
+  const handleRemoveNote = () => {
+    if (route.params?.noteId) {
+      dispatch(deleteNote( route.params.noteId ))
+    }
+    //
     nav.goBack()
   }
 
@@ -63,7 +71,7 @@ const NoteScreen = ({ route }) => {
             <Icon name="arrow-back-outline" type="ionicon" size={20} />
           </ButtonSmall>
 
-          <ButtonSmall handleChange={() => { nav.goBack() }}>
+          <ButtonSmall handleChange={handleRemoveNote}>
             <Icon name="trash-outline" type="ionicon" size={20} />
           </ButtonSmall>
         </View>
