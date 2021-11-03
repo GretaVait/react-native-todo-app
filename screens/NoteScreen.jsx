@@ -21,30 +21,34 @@ const NoteScreen = ({ route }) => {
   const dispatch = useDispatch()
   const notes = useSelector(state => state.notes)
 
-  const [title, setTitle] = useState("")
-  const [body, setBody] = useState("")
-  const [toggle, setToggle] = useState(false)
+  const [note, setNote] = useState({
+    title: '',
+    body: '',
+    pinned: false
+  })
 
   useEffect(() => {
     if (route.params?.noteId) {
-      const noteToEdit = notes.filter(note => note.id === route.params?.noteId)
-      // Change states to smth more managable
-      setTitle(noteToEdit[0]?.title)
-      setBody(noteToEdit[0]?.body)
-      setToggle(noteToEdit[0]?.pinned)
+      const noteToEdit = notes.filter(note => note.id === route.params.noteId)
+      console.log(noteToEdit, 'noteToEdit')
+      setNote({
+        title: noteToEdit[0]?.title,
+        body: noteToEdit[0]?.body,
+        pinned: noteToEdit[0]?.pinned
+      })
     }
   }, [route.params?.noteId])
 
   const handleAddNote = () => {
-    const note = {
-      title: title, 
-      body: body, 
-      pinned: toggle
+    const newNote = {
+      title: note.title, 
+      body: note.body || '', 
+      pinned: note.pinned
     }
     if (route.params?.noteId) {
-      dispatch(updateNote({ noteId: route.params?.noteId, note }))
-    } else if (title || body) {
-      dispatch(addNote(note))
+      dispatch(updateNote({ noteId: route.params?.noteId, note: newNote }))
+    } else if (note.title || note.body) {
+      dispatch(addNote(newNote))
     }
     // 
     nav.goBack()
@@ -72,16 +76,26 @@ const NoteScreen = ({ route }) => {
       <View>
         <TextInput
           style={styles.input}
-          onChangeText={setTitle}
-          value={title}
+          onChangeText={(e) => {
+            setNote((prevState) => ({
+              ...prevState,
+              title: e
+            }))
+          }}
+          value={note.title}
           placeholder="Note's Title"
           multiline={true}
         />
 
         <TextInput 
           style={styles.body}
-          onChangeText={setBody}
-          value={body}
+          onChangeText={(e) => {
+            setNote((prevState) => ({
+              ...prevState,
+              body: e
+            }))
+          }}
+          value={note.body}
           placeholder="Write your note here..."
           multiline={true}
         />
@@ -89,8 +103,13 @@ const NoteScreen = ({ route }) => {
         <Title>Pinned</Title>
         
         <Toggle 
-          active={toggle}
-          handleToggle={() => { setToggle(prevState => { return !prevState }) }}
+          active={note.pinned}
+          handleToggle={() => {
+            setNote((prevState) => ({
+              ...prevState,
+              pinned: !prevState.pinned
+            }))
+          }}
         />
       </View>
     </Container>

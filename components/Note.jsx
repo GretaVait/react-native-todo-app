@@ -28,8 +28,14 @@ const Note = ({ navigation, title, body, date, completed, id, handleCompleteNote
         <Icon name="checkmark-outline" type="ionicon" size={16} color="white" style={{ opacity: completed ? 1 : 0 }} />
       </View>
       <View style={{ opacity: completed ? .3 : 1 }}>
-        <Text style={styles.noteTitle}>{title}</Text>
-        <Text style={styles.noteBody}>{body}</Text>
+        {
+          title != '' &&
+            <Text style={styles.noteTitle}>{title}</Text>
+        }
+        {
+          body != '' &&
+            <Text style={styles.noteBody}>{body}</Text>
+        }
         <View style={styles.noteDate}>
           <Text style={styles.noteDateText}>{date}</Text>
         </View>
