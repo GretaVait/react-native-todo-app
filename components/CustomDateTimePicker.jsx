@@ -41,7 +41,7 @@ const CustomDateTimePicker = ({ note, setNote }) => {
 
       <View style={styles.pickerContainer}>
         <TouchableOpacity onPress={showTimePicker} style={styles.picker}>
-          <Text style={{...styles.pickerItem, ...styles.pickerText}}>{moment(note.date).format('HH')}{console.log(note.date)}</Text>
+          <Text style={{...styles.pickerItem, ...styles.pickerText}}>{moment(note.date).format('HH')}</Text>
           <Text style={styles.pickerItem}>:</Text>
           <Text style={{...styles.pickerItem, ...styles.pickerText}}>{moment(note.date).format('mm')}</Text>
         </TouchableOpacity>
