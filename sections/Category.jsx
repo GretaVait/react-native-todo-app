@@ -22,46 +22,47 @@ const Category = ({ navigation, title, notes }) => {
   const dispatch = useDispatch()
 
   return (
-    // <View style={{ flex: 1, flexDirection: 'row' }}>
-    //   <View style={{ width: 32 }}>
-    //     <Catgories active={title} />
-    //   </View>
-    // </View>
-    <Container>
-      <View style={styles.header}>
-        <Text style={styles.title}>{title}</Text>
-
-        <ButtonSmall>
-          <View style={{ ...styles.menuLine, marginBottom: 4 }} />
-          <View style={styles.menuLine} />
-        </ButtonSmall>
-
+    <View style={{ flex: 1, flexDirection: 'row' }}>
+      <View style={{ width: 32 }}>
+        <Catgories />
       </View>
 
-      <SectionList
-        sections={notes}
-        keyExtractor={(item, index) => item + index}
-        renderItem={({ item }) => (
-          <Note 
-            title={item.title}
-            body={item.body}
-            date="Today, 4:30PM"
-            completed={item.completed}
-            id={item.id}
-            handleCompleteNote={() => { dispatch(completeNote(item.id)) }}
-            navigation={navigation}
-          />
-        )}
-        renderSectionHeader={({ section: { title }, section }) => (
-          section.data.length > 0 &&
-            <Title style={styles.subtitle}>{title}</Title>
-        )} 
-      />
+      <Container>
+        <View style={styles.header}>
+          <Text style={styles.title}>{title}</Text>
 
-      <TouchableOpacity style={ styles.addNoteButton } onPress={() => { nav.navigate('NoteScreen') }}>
-        <Icon name="add-outline" type="ionicon" size={48} color="white" />
-      </TouchableOpacity>
-    </Container>
+          <ButtonSmall>
+            <View style={{ ...styles.menuLine, marginBottom: 4 }} />
+            <View style={styles.menuLine} />
+          </ButtonSmall>
+
+        </View>
+
+        <SectionList
+          sections={notes}
+          keyExtractor={(item, index) => item + index}
+          renderItem={({ item }) => (
+            <Note 
+              title={item.title}
+              body={item.body}
+              date={item.date}
+              completed={item.completed}
+              id={item.id}
+              handleCompleteNote={() => { dispatch(completeNote(item.id)) }}
+              navigation={navigation}
+            />
+          )}
+          renderSectionHeader={({ section: { title }, section }) => (
+            section.data.length > 0 &&
+              <Title style={styles.subtitle}>{title}</Title>
+          )} 
+        />
+
+        <TouchableOpacity style={ styles.addNoteButton } onPress={() => { nav.navigate('NoteScreen') }}>
+          <Icon name="add-outline" type="ionicon" size={48} color="white" />
+        </TouchableOpacity>
+      </Container>
+    </View>
   ) 
 }
 

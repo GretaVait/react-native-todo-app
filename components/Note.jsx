@@ -3,7 +3,7 @@ import React from 'react'
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 // Lib
 import { Icon } from 'react-native-elements'
-import { useSelector } from 'react-redux'
+import moment from 'moment'
 // Navigation
 import { CommonActions } from '@react-navigation/native'
 // Colors
@@ -37,7 +37,14 @@ const Note = ({ navigation, title, body, date, completed, id, handleCompleteNote
             <Text style={styles.noteBody}>{body}</Text>
         }
         <View style={styles.noteDate}>
-          <Text style={styles.noteDateText}>{date}</Text>
+          {
+            moment(date).isSame(moment(), 'day') ?
+              <Text style={styles.noteDateText}>Today, {moment(date).format("HH:mm")}</Text>
+            : moment(date).isSame(moment().add(1,'days'), 'day') ?
+              <Text style={styles.noteDateText}>Tomorrow, {moment(date).format("HH:mm")}</Text>
+            :
+            <Text style={styles.noteDateText}>{moment(date).format("MM/DD")}, {moment(date).format("HH:mm")}</Text>
+          }
         </View>
       </View>
     </TouchableOpacity>

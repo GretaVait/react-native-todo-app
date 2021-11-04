@@ -1,8 +1,9 @@
 // Base
 import React, { useEffect, useState } from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, TextInput } from 'react-native'
+import { View, Text, TextInput, StyleSheet } from 'react-native'
 // Lib
 import { Icon } from 'react-native-elements'
+import BottomSheet from 'reanimated-bottom-sheet'
 // Navigation
 import { useNavigation } from '@react-navigation/core'
 // Redux
@@ -12,8 +13,7 @@ import { useSelector } from 'react-redux'
 // Comp
 import Container from '../components/Container'
 import ButtonSmall from '../components/ButtonSmall'
-import Title from '../components/Title'
-import Toggle from '../components/Toggle'
+import NoteScreenBottomSheet from '../components/NoteScreenBottomSheet'
 // Colors
 import colors from '../constants/colors'
 
@@ -22,11 +22,14 @@ const NoteScreen = ({ route }) => {
   const dispatch = useDispatch()
   const notes = useSelector(state => state.notes)
 
+  const sheetRef = React.useRef(null)
+
   const [note, setNote] = useState({
     title: '',
     body: '',
     pinned: false,
-    category: 'personal'
+    category: 'personal',
+    date: new Date()
   })
 
   useEffect(() => {
@@ -37,7 +40,8 @@ const NoteScreen = ({ route }) => {
         title: noteToEdit[0]?.title,
         body: noteToEdit[0]?.body,
         pinned: noteToEdit[0]?.pinned,
-        category: noteToEdit[0]?.category
+        category: noteToEdit[0]?.category,
+        date: noteToEdit[0]?.date
       })
     }
   }, [route.params?.noteId])
@@ -47,7 +51,8 @@ const NoteScreen = ({ route }) => {
       title: note.title, 
       body: note.body || '', 
       pinned: note.pinned,
-      category: note.category
+      category: note.category,
+      date: note.date
     }
     if (route.params?.noteId) {
       dispatch(updateNote({ noteId: route.params.noteId, note: newNote }))
@@ -66,113 +71,76 @@ const NoteScreen = ({ route }) => {
     nav.goBack()
   }
 
+  const renderContent = () => (
+    <View style={styles.bottomContainer}>
+      <View style={styles.handle}>
+        <View style={styles.handleItem} />
+      </View>
+      <NoteScreenBottomSheet note={note} setNote={setNote} />
+    </View>
+  )
+
+
   return (
-    <Container>
-      <View style={styles.actions}>
-        <View style={styles.actionsLeft}>
-          <ButtonSmall handleChange={handleAddNote} style={styles.actionsButton}>
-            <Icon name="arrow-back-outline" type="ionicon" size={20} />
-          </ButtonSmall>
+    <View style={{ flex: 1 }}>
+      <Container>
+        <View style={styles.actions}>
+          <View style={styles.actionsLeft}>
+            <ButtonSmall handleChange={handleAddNote} style={styles.actionsButton}>
+              <Icon name="arrow-back-outline" type="ionicon" size={20} />
+            </ButtonSmall>
 
-          <ButtonSmall handleChange={handleRemoveNote}>
-            <Icon name="trash-outline" type="ionicon" size={20} />
+            <ButtonSmall handleChange={handleRemoveNote}>
+              <Icon name="trash-outline" type="ionicon" size={20} />
+            </ButtonSmall>
+          </View>
+
+          <ButtonSmall>
+            <Icon name="attach-outline" type="ionicon" size={20} />
           </ButtonSmall>
+          
         </View>
 
-        <ButtonSmall>
-          <Icon name="attach-outline" type="ionicon" size={20} />
-        </ButtonSmall>
-        
-      </View>
-      
-      <View>
-        <TextInput
-          style={styles.input}
-          onChangeText={(e) => {
-            setNote((prevState) => ({
-              ...prevState,
-              title: e
-            }))
-          }}
-          value={note.title}
-          placeholder="Note's Title"
-          multiline={true}
-        />
-
-        <TextInput 
-          style={styles.body}
-          onChangeText={(e) => {
-            setNote((prevState) => ({
-              ...prevState,
-              body: e
-            }))
-          }}
-          value={note.body}
-          placeholder="Write your note here..."
-          multiline={true}
-        />
-
-        <Title>Pinned</Title>
-        
-        <Toggle 
-          active={note.pinned}
-          handleToggle={() => {
-            setNote((prevState) => ({
-              ...prevState,
-              pinned: !prevState.pinned
-            }))
-          }}
-        />
-
-        <Title>Category</Title>
-        <View style={styles.categoriesList}>
-          <CategoryItem 
-            title="Personal" 
-            color="#9CC9E7" 
-            active={note.category === 'personal'} 
-            onSelect={() => {
+        <View>
+          <TextInput
+            style={styles.input}
+            onChangeText={(e) => {
               setNote((prevState) => ({
                 ...prevState,
-                category: 'personal'
+                title: e
               }))
-            }} 
+            }}
+            value={note.title}
+            placeholder="Note's Title"
+            multiline={true}
           />
-          <CategoryItem 
-            title="Work" 
-            color="#F69595" 
-            active={note.category === 'work'} 
-            onSelect={() => {
+
+          <TextInput 
+            style={styles.body}
+            onChangeText={(e) => {
               setNote((prevState) => ({
                 ...prevState,
-                category: 'work'
+                body: e
               }))
-            }} 
-          />
-          <CategoryItem 
-            title="Ideas" 
-            color="#9BBCC6" 
-            active={note.category === 'ideas'} 
-            onSelect={() => {
-              setNote((prevState) => ({
-                ...prevState,
-                category: 'ideas'
-              }))
-            }} 
+            }}
+            value={note.body}
+            placeholder="Write your note here..."
+            multiline={true}
           />
         </View>
-      </View>
-    </Container>
+        
+      </Container>
+      <BottomSheet
+        ref={sheetRef}
+        snapPoints={[300, 300, 100]}
+        borderRadius={10}
+        renderContent={renderContent}
+        enabledGestureInteraction={true}
+        enabledContentTapInteraction={false}
+      />
+    </View>
   ) 
 }
-
-const CategoryItem = ({ title, color, active, onSelect }) => (
-  <TouchableOpacity style={{ ...styles.category, backgroundColor: color }} onPress={onSelect}>
-    <View style={{ ...styles.categorySelected, opacity: active ? 1 : 0 }}>
-      <Icon name="checkmark-outline" type="ionicon" size={10} color="white" />
-    </View>
-    <Text style={styles.categoryText}>{title}</Text>
-  </TouchableOpacity>
-)
 
 const styles = StyleSheet.create({
   input: {
@@ -182,7 +150,7 @@ const styles = StyleSheet.create({
     color: colors.black
   },
   body: {
-    fontSize: 16,
+    fontSize: 14,
     color: colors.purple
   },
   actions: {
@@ -198,31 +166,20 @@ const styles = StyleSheet.create({
   actionsButton: {
     marginRight: 8
   },
-  categoriesList: {
-    flexDirection: 'row',
-    flexWrap: 'wrap'
+  bottomContainer: {
+    backgroundColor: colors.lightGrey,
+    height: 300,
+    flexGrow: 2,
+    padding: 32,
   },
-  category: {
-    position: 'relative',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 8,
-    marginRight: 16,
+  handle: {
+    alignItems: 'center'
   },
-  categoryText: {
-    color: colors.purple,
-    fontWeight: 'bold'
-  },
-  categorySelected: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    position: 'absolute',
-    top: -4,
-    right: -4,
-    backgroundColor: colors.purple,
+  handleItem: {
+    width: 48,
+    height: 5,
+    backgroundColor: colors.black,
     borderRadius: 500,
-    width: 16,
-    height: 16
   }
 })
 

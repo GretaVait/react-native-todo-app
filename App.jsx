@@ -26,12 +26,8 @@ export default function App() {
       <SafeAreaProvider>
         <NavigationContainer>
           <SafeAreaView style={{ flex: 1 }}>
-            <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'height' : 'height'} style={{ flex: 1, flexDirection: 'row' }}>
+            <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'height' : 'height'} style={{ flex: 1 }}>
 
-              <View style={{ width: 32 }}>
-                <Catgories  />
-              </View>
-              
               <Stack.Navigator>
                 <Stack.Screen name="HomeScreen" component={HomeScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="NoteScreen" component={NoteScreen} options={{ headerShown: false }} />
