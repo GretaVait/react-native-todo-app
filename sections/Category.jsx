@@ -54,12 +54,8 @@ const Category = ({ navigation, title, notes }) => {
           sections={notes}
           keyExtractor={(item, index) => item + index}
           renderItem={({ item }) => (
-            <Note 
-              title={item.title}
-              body={item.body}
-              date={item.date}
-              completed={item.completed}
-              id={item.id}
+            <Note
+              note={item}
               handleCompleteNote={() => { dispatch(completeNote(item.id)) }}
               navigation={navigation}
             />

@@ -1,9 +1,10 @@
 // Base
 import React, { useEffect, useState } from 'react'
-import { View, Text, TextInput, StyleSheet } from 'react-native'
+import { View, TextInput, Image, StyleSheet, TouchableOpacity, Dimensions } from 'react-native'
 // Lib
 import { Icon } from 'react-native-elements'
 import BottomSheet from 'reanimated-bottom-sheet'
+import * as ImagePicker from 'expo-image-picker'
 // Navigation
 import { useNavigation } from '@react-navigation/core'
 // Redux
@@ -31,10 +32,13 @@ const NoteScreen = ({ route }) => {
     body: '',
     pinned: false,
     category: 'personal',
-    date: new Date()
+    date: new Date(),
+    files: []
   })
   const [overlay, setOverlay] = useState(false)
+  const [fileId, setFileId] = useState(0)
 
+  // EDIT A NOTE //
   useEffect(() => {
     if (route.params?.noteId) {
       const noteToEdit = notes.filter(note => note.id === route.params.noteId)
@@ -44,18 +48,21 @@ const NoteScreen = ({ route }) => {
         body: noteToEdit[0]?.body,
         pinned: noteToEdit[0]?.pinned,
         category: noteToEdit[0]?.category,
-        date: noteToEdit[0]?.date
+        date: noteToEdit[0]?.date,
+        files: noteToEdit[0]?.files
       })
     }
   }, [route.params?.noteId])
 
+  // ADD NOTE //
   const handleAddNote = () => {
     const newNote = {
       title: note.title, 
       body: note.body || '', 
       pinned: note.pinned,
       category: note.category,
-      date: note.date
+      date: note.date,
+      files: note.files
     }
     if (route.params?.noteId) {
       dispatch(updateNote({ noteId: route.params.noteId, note: newNote }))
@@ -66,6 +73,7 @@ const NoteScreen = ({ route }) => {
     nav.goBack()
   }
 
+  // REMOVE NOTE //
   const handleRemoveNote = () => {
     if (route.params?.noteId) {
       dispatch(deleteNote( route.params.noteId ))
@@ -74,6 +82,7 @@ const NoteScreen = ({ route }) => {
     nav.goBack()
   }
 
+  // BOTTOM SHEET CONTENT //
   const renderContent = () => (
     <View style={styles.bottomContainer}>
       <View style={styles.handle}>
@@ -82,14 +91,47 @@ const NoteScreen = ({ route }) => {
       <NoteScreenBottomSheet note={note} setNote={setNote} />
     </View>
   )
-
+  
+  // PICK AN IMAGE
+  let openImagePickerAsync = async () => {
+    // ask for permission to access photos
+    let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (permissionResult.granted === false) {
+      alert("Permission to access camera roll is required!");
+      return;
+    }
+    // get picked img data
+    let pickerResult = await ImagePicker.launchImageLibraryAsync();
+    // set picked img data to state
+    if (pickerResult.cancelled === true) {
+      return;
+    }
+    console.log(pickerResult)
+    setNote((prevState) => ({
+      ...prevState,
+      files: [
+        ...note.files,
+        {
+          id: fileId,
+          localUri: pickerResult.uri, 
+          width: pickerResult.width, 
+          height: pickerResult.height
+        }
+      ]
+    }))
+    setFileId(fileId + 1)
+  }
 
   return (
     <View style={{ flex: 1 }}>
       
       <Overlay open={overlay} onClose={() => { setOverlay(false) }}>
         <OverlayItem title="Take a photo" icon={{ name: "camera", type: "ionicon" }} />
-        <OverlayItem title="Add from library" icon={{ name: "image", type: "ionicon" }} />
+        <OverlayItem 
+          title="Add from library" 
+          icon={{ name: "image", type: "ionicon" }} 
+          onSelect={() => { openImagePickerAsync() }}
+        />
       </Overlay>
 
       <Container>
@@ -136,6 +178,31 @@ const NoteScreen = ({ route }) => {
             placeholder="Write your note here..."
             multiline={true}
           />
+          {
+            note.files &&
+            <View style={styles.files}>
+              {
+                note.files.map((file) => (
+                  <TouchableOpacity onLongPress={() => {
+                    setNote((prevState) => ({
+                      ...prevState,
+                      files: note.files.filter(newFile => newFile.id != file.id )
+                    }))
+                  }}
+                  key={file.id}>
+                    <Image
+                      source={{ uri: file?.localUri }}
+                      style={{ 
+                        ...styles.thumbnail,
+                        width: ((Dimensions.get('screen').width / 2) - 24),
+                        height: ((Dimensions.get('screen').width / 2) - 24)
+                      }}
+                    />
+                  </TouchableOpacity>
+                ))
+              }
+            </View>
+          }
         </View>
         
       </Container>
@@ -160,7 +227,8 @@ const styles = StyleSheet.create({
   },
   body: {
     fontSize: 14,
-    color: colors.purple
+    color: colors.purple,
+    marginBottom: 24
   },
   actions: {
     flexDirection: 'row',
@@ -189,6 +257,15 @@ const styles = StyleSheet.create({
     height: 5,
     backgroundColor: colors.black,
     borderRadius: 500,
+  },
+  files: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between'
+  },
+  thumbnail: {
+    resizeMode: "cover",
+    marginBottom: 16
   }
 })
 

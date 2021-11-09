@@ -23,7 +23,7 @@ export default (state = initialState, action) => {
           title: '',
           body: '',
           date: new Date(),
-          file: [],
+          files: [],
           category: '',
           completed: false,
           deleted: false,

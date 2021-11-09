@@ -1,6 +1,6 @@
 // Base
 import React from 'react'
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native'
 // Lib
 import { Icon } from 'react-native-elements'
 import moment from 'moment'
@@ -9,7 +9,7 @@ import { CommonActions } from '@react-navigation/native'
 // Colors
 import colors from '../constants/colors'
 
-const Note = ({ navigation, title, body, date, completed, id, handleCompleteNote }) => {
+const Note = ({ note: { title, body, date, completed, files, id }, handleCompleteNote, navigation }) => {
 
   const handleEditNote = (id) => {
     navigation.dispatch(
@@ -35,6 +35,21 @@ const Note = ({ navigation, title, body, date, completed, id, handleCompleteNote
         {
           body != '' &&
             <Text style={styles.noteBody}>{body}</Text>
+        }
+        {console.log(files, 'files')}
+        {
+          files[0]?.localUri &&
+            <View style={{ flexDirection: 'row' }}>
+              {
+                files.map((file, index) => (
+                  <Image
+                    source={{ uri: file?.localUri }}
+                    style={styles.thumbnail}
+                    key={index}
+                  />
+                ))
+              }
+            </View>
         }
         <View style={styles.noteDate}>
           {
@@ -91,6 +106,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center'
+  },
+  thumbnail: {
+    width: 94,
+    height: 94,
+    resizeMode: 'cover',
+    marginBottom: 16,
+    marginRight: 16
   }
 })
 
