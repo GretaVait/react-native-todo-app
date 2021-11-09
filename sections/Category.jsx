@@ -1,5 +1,5 @@
 // Base
-import React from 'react'
+import React, { useState } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, SectionList } from 'react-native'
 // Lib
 import { Icon } from 'react-native-elements'
@@ -16,13 +16,19 @@ import Catgories from '../components/Categories'
 import { completeNote } from '../redux/actions/noteActions'
 import { useDispatch } from 'react-redux'
 import Title from '../components/Title'
+import Overlay from '../components/Overlay'
 
 const Category = ({ navigation, title, notes }) => { 
   const nav = useNavigation()
   const dispatch = useDispatch()
+  
+  const [overlay, setOverlay] = useState(false)
 
   return (
     <View style={{ flex: 1, flexDirection: 'row' }}>
+      
+      <Overlay open={overlay} onClose={() => { setOverlay(false) }} />
+      
       <View style={{ width: 32 }}>
         <Catgories />
       </View>
@@ -31,7 +37,7 @@ const Category = ({ navigation, title, notes }) => {
         <View style={styles.header}>
           <Text style={styles.title}>{title}</Text>
 
-          <ButtonSmall>
+          <ButtonSmall handleChange={() => { setOverlay(true) }}>
             <View style={{ ...styles.menuLine, marginBottom: 4 }} />
             <View style={styles.menuLine} />
           </ButtonSmall>
