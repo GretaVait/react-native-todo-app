@@ -164,6 +164,7 @@ const NoteScreen = ({ route }) => {
             value={note.title}
             placeholder="Note's Title"
             multiline={true}
+            returnKeyType="done"
           />
 
           <TextInput 
@@ -177,6 +178,7 @@ const NoteScreen = ({ route }) => {
             value={note.body}
             placeholder="Write your note here..."
             multiline={true}
+            returnKeyType="done"
           />
           {
             note.files &&
