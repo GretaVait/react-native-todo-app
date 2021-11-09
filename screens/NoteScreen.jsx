@@ -16,6 +16,8 @@ import ButtonSmall from '../components/ButtonSmall'
 import NoteScreenBottomSheet from '../components/NoteScreenBottomSheet'
 // Colors
 import colors from '../constants/colors'
+import Overlay from '../components/Overlay'
+import OverlayItem from '../components/OverlayItem'
 
 const NoteScreen = ({ route }) => { 
   const nav = useNavigation()
@@ -31,6 +33,7 @@ const NoteScreen = ({ route }) => {
     category: 'personal',
     date: new Date()
   })
+  const [overlay, setOverlay] = useState(false)
 
   useEffect(() => {
     if (route.params?.noteId) {
@@ -83,6 +86,12 @@ const NoteScreen = ({ route }) => {
 
   return (
     <View style={{ flex: 1 }}>
+      
+      <Overlay open={overlay} onClose={() => { setOverlay(false) }}>
+        <OverlayItem title="Take a photo" icon={{ name: "camera", type: "ionicon" }} />
+        <OverlayItem title="Add from library" icon={{ name: "image", type: "ionicon" }} />
+      </Overlay>
+
       <Container>
         <View style={styles.actions}>
           <View style={styles.actionsLeft}>
@@ -95,7 +104,7 @@ const NoteScreen = ({ route }) => {
             </ButtonSmall>
           </View>
 
-          <ButtonSmall>
+          <ButtonSmall handleChange={() => { setOverlay(true) }}>
             <Icon name="attach-outline" type="ionicon" size={20} />
           </ButtonSmall>
           

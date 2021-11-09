@@ -17,6 +17,7 @@ import { completeNote } from '../redux/actions/noteActions'
 import { useDispatch } from 'react-redux'
 import Title from '../components/Title'
 import Overlay from '../components/Overlay'
+import OverlayItem from '../components/OverlayItem'
 
 const Category = ({ navigation, title, notes }) => { 
   const nav = useNavigation()
@@ -27,7 +28,12 @@ const Category = ({ navigation, title, notes }) => {
   return (
     <View style={{ flex: 1, flexDirection: 'row' }}>
       
-      <Overlay open={overlay} onClose={() => { setOverlay(false) }} />
+      <Overlay open={overlay} onClose={() => { setOverlay(false) }}>
+        <OverlayItem 
+          title="History"
+          icon={{ name: "history", type: "material" }}
+        />
+      </Overlay>
       
       <View style={{ width: 32 }}>
         <Catgories />
