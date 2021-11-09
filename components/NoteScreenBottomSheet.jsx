@@ -1,8 +1,9 @@
 // Base
-import React, { useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, TextInput } from 'react-native'
 // Lib
 import { Icon } from 'react-native-elements'
+import * as ImagePicker from 'expo-image-picker'
 // Comp
 import Title from '../components/Title'
 import Toggle from '../components/Toggle'
@@ -11,9 +12,54 @@ import CustomDateTimePicker from '../components/CustomDateTimePicker'
 import colors from '../constants/colors'
 
 const NoteScreenBottomSheet = ({ note, setNote }) => { 
+  const [fileId, setFileId] = useState(0)
+
+  // PICK AN IMAGE
+  let openImagePickerAsync = async () => {
+    // ask for permission to access photos
+    let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (permissionResult.granted === false) {
+      alert("Permission to access camera roll is required!");
+      return;
+    }
+    // get picked img data
+    let pickerResult = await ImagePicker.launchImageLibraryAsync();
+    // set picked img data to state
+    if (pickerResult.cancelled === true) {
+      return;
+    }
+    setNote((prevState) => ({
+      ...prevState,
+      files: [
+        ...note.files,
+        {
+          id: fileId,
+          localUri: pickerResult.uri, 
+          width: pickerResult.width, 
+          height: pickerResult.height
+        }
+      ]
+    }))
+    setFileId(fileId + 1)
+  }
 
   return (
     <View>
+
+      <View style={styles.settings}>
+        <Title style={styles.settingsTitle}>Attach File</Title>
+
+        <View style={styles.attach}>
+          <View style={styles.attachItem}>
+            <Icon name="camera" type="ionicon" size={24} color={colors.black} />
+            <Text style={styles.attachTitle}>Camera</Text>
+          </View>
+          <TouchableOpacity style={styles.attachItem} onPress={() => { openImagePickerAsync() }}>
+            <Icon name="image" type="ionicon" size={24} color={colors.black} />
+            <Text style={styles.attachTitle}>Image</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
 
       <View style={styles.settings}>
         <Title style={styles.settingsTitle}>Category</Title>
@@ -114,6 +160,23 @@ const styles = StyleSheet.create({
     borderRadius: 500,
     width: 16,
     height: 16
+  },
+  attach: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  attachItem: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.grey,
+    width: 72,
+    height: 72,
+    borderRadius: 8,
+    marginRight: 16
+  },
+  attachTitle: {
+    color: colors.black,
+    fontSize: 12
   }
 })
 

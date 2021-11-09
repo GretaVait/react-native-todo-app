@@ -1,10 +1,9 @@
 // Base
-import React, { useEffect, useState } from 'react'
-import { View, TextInput, Image, StyleSheet, TouchableOpacity, Dimensions } from 'react-native'
+import React, { useEffect, useState, useRef } from 'react'
+import { View, TextInput, Image, StyleSheet, TouchableOpacity, Dimensions, Text } from 'react-native'
 // Lib
 import { Icon } from 'react-native-elements'
 import BottomSheet from 'reanimated-bottom-sheet'
-import * as ImagePicker from 'expo-image-picker'
 // Navigation
 import { useNavigation } from '@react-navigation/core'
 // Redux
@@ -17,8 +16,6 @@ import ButtonSmall from '../components/ButtonSmall'
 import NoteScreenBottomSheet from '../components/NoteScreenBottomSheet'
 // Colors
 import colors from '../constants/colors'
-import Overlay from '../components/Overlay'
-import OverlayItem from '../components/OverlayItem'
 
 const NoteScreen = ({ route }) => { 
   const nav = useNavigation()
@@ -35,8 +32,6 @@ const NoteScreen = ({ route }) => {
     date: new Date(),
     files: []
   })
-  const [overlay, setOverlay] = useState(false)
-  const [fileId, setFileId] = useState(0)
 
   // EDIT A NOTE //
   useEffect(() => {
@@ -66,7 +61,7 @@ const NoteScreen = ({ route }) => {
     }
     if (route.params?.noteId) {
       dispatch(updateNote({ noteId: route.params.noteId, note: newNote }))
-    } else if (note.title || note.body) {
+    } else if (note.title || note.body || note.files) {
       dispatch(addNote(newNote))
     }
     // 
@@ -84,55 +79,20 @@ const NoteScreen = ({ route }) => {
 
   // BOTTOM SHEET CONTENT //
   const renderContent = () => (
-    <View style={styles.bottomContainer}>
-      <View style={styles.handle}>
-        <View style={styles.handleItem} />
+    <View style={{
+      marginTop: 20,
+    }}>
+      <View style={styles.bottomContainer}>
+        <View style={styles.handle}>
+          <View style={styles.handleItem} />
+        </View>
+        <NoteScreenBottomSheet note={note} setNote={setNote} />
       </View>
-      <NoteScreenBottomSheet note={note} setNote={setNote} />
     </View>
   )
-  
-  // PICK AN IMAGE
-  let openImagePickerAsync = async () => {
-    // ask for permission to access photos
-    let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (permissionResult.granted === false) {
-      alert("Permission to access camera roll is required!");
-      return;
-    }
-    // get picked img data
-    let pickerResult = await ImagePicker.launchImageLibraryAsync();
-    // set picked img data to state
-    if (pickerResult.cancelled === true) {
-      return;
-    }
-    console.log(pickerResult)
-    setNote((prevState) => ({
-      ...prevState,
-      files: [
-        ...note.files,
-        {
-          id: fileId,
-          localUri: pickerResult.uri, 
-          width: pickerResult.width, 
-          height: pickerResult.height
-        }
-      ]
-    }))
-    setFileId(fileId + 1)
-  }
 
   return (
     <View style={{ flex: 1 }}>
-      
-      <Overlay open={overlay} onClose={() => { setOverlay(false) }}>
-        <OverlayItem title="Take a photo" icon={{ name: "camera", type: "ionicon" }} />
-        <OverlayItem 
-          title="Add from library" 
-          icon={{ name: "image", type: "ionicon" }} 
-          onSelect={() => { openImagePickerAsync() }}
-        />
-      </Overlay>
 
       <Container>
         <View style={styles.actions}>
@@ -146,8 +106,8 @@ const NoteScreen = ({ route }) => {
             </ButtonSmall>
           </View>
 
-          <ButtonSmall handleChange={() => { setOverlay(true) }}>
-            <Icon name="attach-outline" type="ionicon" size={20} />
+          <ButtonSmall handleChange={() => sheetRef.current.snapTo(0)}>
+            <Icon name="options-outline" type="ionicon" size={20} />
           </ButtonSmall>
           
         </View>
@@ -210,7 +170,8 @@ const NoteScreen = ({ route }) => {
       </Container>
       <BottomSheet
         ref={sheetRef}
-        snapPoints={[300, 300, 100]}
+        snapPoints={[500, 0]}
+        initialSnap={1}
         borderRadius={10}
         renderContent={renderContent}
         enabledGestureInteraction={true}
@@ -247,9 +208,19 @@ const styles = StyleSheet.create({
   },
   bottomContainer: {
     backgroundColor: colors.lightGrey,
-    height: 300,
+    height: 500,
     flexGrow: 2,
     padding: 32,
+    marginBottom: -20,
+    shadowColor: colors.black,
+    shadowOffset: {
+      width: 0,
+      height: 500,
+    },
+    shadowOpacity: 0.5,
+    shadowRadius: 16,
+    
+    elevation: 24,
   },
   handle: {
     alignItems: 'center'
