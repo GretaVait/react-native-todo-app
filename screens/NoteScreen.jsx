@@ -288,7 +288,6 @@ const styles = StyleSheet.create({
     position: 'absolute', 
     right: 0, 
     top: 16,
-    backgroundColor: 'red',
     borderRadius: 8,
     backgroundColor: colors.lightGrey,
     shadowColor: colors.black,
