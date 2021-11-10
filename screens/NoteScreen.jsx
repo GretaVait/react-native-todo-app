@@ -1,6 +1,6 @@
 // Base
 import React, { useEffect, useState, useRef } from 'react'
-import { View, TextInput, Image, StyleSheet, TouchableOpacity, Dimensions, Text } from 'react-native'
+import { View, TextInput, Image, StyleSheet, TouchableOpacity, Dimensions, Keyboard, Platform } from 'react-native'
 // Lib
 import { Icon } from 'react-native-elements'
 import BottomSheet from 'reanimated-bottom-sheet'
@@ -21,6 +21,8 @@ const NoteScreen = ({ route }) => {
   const nav = useNavigation()
   const dispatch = useDispatch()
   const notes = useSelector(state => state.notes)
+  const [snapPoint, setSnapPoint] = useState(500)
+  const [actionModal, setActionModal] = useState(false)
 
   const sheetRef = React.useRef(null)
 
@@ -61,7 +63,7 @@ const NoteScreen = ({ route }) => {
     }
     if (route.params?.noteId) {
       dispatch(updateNote({ noteId: route.params.noteId, note: newNote }))
-    } else if (note.title || note.body || note.files) {
+    } else if (note.title || note.body || note.files.length > 0) {
       dispatch(addNote(newNote))
     }
     // 
@@ -80,7 +82,7 @@ const NoteScreen = ({ route }) => {
   // BOTTOM SHEET CONTENT //
   const renderContent = () => (
     <View style={{
-      marginTop: 20,
+      marginTop: 20
     }}>
       <View style={styles.bottomContainer}>
         <View style={styles.handle}>
@@ -91,10 +93,49 @@ const NoteScreen = ({ route }) => {
     </View>
   )
 
+  // CHECK IF KEYBOARD IS VISIBLE/HIDDEN //
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      () => {
+        sheetRef.current.snapTo(1)
+      }
+    )
+
+    const keyboardWillShowListener = Keyboard.addListener(
+      'keyboardWillShow',
+      () => {
+        sheetRef.current.snapTo(1)
+      }
+    )
+
+    return () => {
+      keyboardWillShowListener.remove()
+      keyboardDidShowListener.remove()
+    }
+  }, [])
+
+  const handleOptionsButton = () => {
+    if (Platform.OS === 'ios') {
+      Keyboard.dismiss()
+      setSnapPoint(500)
+      sheetRef.current.snapTo(0)
+    } else {
+      setActionModal(true)
+    }
+  }
+
+  // 
+
+  const wrapperRef = useRef(null)
+  // useEffect(() => {
+  //   console.log(wrapperRef?.current)
+  // }, [wrapperRef])
+
   return (
     <View style={{ flex: 1 }}>
 
-      <Container>
+      <Container handlePress={() => { setActionModal(false) }}>
         <View style={styles.actions}>
           <View style={styles.actionsLeft}>
             <ButtonSmall handleChange={handleAddNote} style={styles.actionsButton}>
@@ -106,7 +147,7 @@ const NoteScreen = ({ route }) => {
             </ButtonSmall>
           </View>
 
-          <ButtonSmall handleChange={() => sheetRef.current.snapTo(0)}>
+          <ButtonSmall handleChange={handleOptionsButton}>
             <Icon name="options-outline" type="ionicon" size={20} />
           </ButtonSmall>
           
@@ -168,9 +209,12 @@ const NoteScreen = ({ route }) => {
         </View>
         
       </Container>
+      <View style={{...styles.actionsModal, opacity: actionModal ? 1 : 0}} pointerEvents={actionModal ? 'auto' : 'none'} >
+        <NoteScreenBottomSheet note={note} setNote={setNote} />
+      </View>
       <BottomSheet
         ref={sheetRef}
-        snapPoints={[500, 0]}
+        snapPoints={[snapPoint, 0]}
         initialSnap={1}
         borderRadius={10}
         renderContent={renderContent}
@@ -239,6 +283,24 @@ const styles = StyleSheet.create({
   thumbnail: {
     resizeMode: "cover",
     marginBottom: 16
+  },
+  actionsModal: {
+    position: 'absolute', 
+    right: 0, 
+    top: 16,
+    backgroundColor: 'red',
+    borderRadius: 8,
+    backgroundColor: colors.lightGrey,
+    shadowColor: colors.black,
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.30,
+    shadowRadius: 4.65,
+
+    elevation: 24,
+    padding: 24
   }
 })
 

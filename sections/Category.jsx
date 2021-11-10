@@ -67,7 +67,7 @@ const Category = ({ navigation, title, notes }) => {
         />
 
         <TouchableOpacity style={ styles.addNoteButton } onPress={() => { nav.navigate('NoteScreen') }}>
-          <Icon name="add-outline" type="ionicon" size={48} color="white" />
+          <Icon name="create-outline" type="ionicon" size={32} color="white" />
         </TouchableOpacity>
       </Container>
     </View>
