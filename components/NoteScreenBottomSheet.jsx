@@ -11,10 +11,9 @@ import CustomDateTimePicker from '../components/CustomDateTimePicker'
 // Colors
 import colors from '../constants/colors'
 
-const NoteScreenBottomSheet = ({ note, setNote }) => { 
-  const [fileId, setFileId] = useState(0)
+const NoteScreenBottomSheet = ({ note, setNote, onOpenCamera }) => { 
 
-  // PICK AN IMAGE
+  // PICK AN IMAGE //
   let openImagePickerAsync = async () => {
     // ask for permission to access photos
     let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -33,14 +32,13 @@ const NoteScreenBottomSheet = ({ note, setNote }) => {
       files: [
         ...note.files,
         {
-          id: fileId,
+          id: pickerResult.uri.substr(pickerResult.uri.length - 12) + pickerResult.width,
           localUri: pickerResult.uri, 
           width: pickerResult.width, 
           height: pickerResult.height
         }
       ]
     }))
-    setFileId(fileId + 1)
   }
 
   return (
@@ -50,10 +48,10 @@ const NoteScreenBottomSheet = ({ note, setNote }) => {
         <Title style={styles.settingsTitle}>Attach File</Title>
 
         <View style={styles.attach}>
-          <View style={styles.attachItem}>
+          <TouchableOpacity style={styles.attachItem} onPress={() => { onOpenCamera() }}>
             <Icon name="camera" type="ionicon" size={24} color={colors.black} />
             <Text style={styles.attachTitle}>Camera</Text>
-          </View>
+          </TouchableOpacity>
           <TouchableOpacity style={styles.attachItem} onPress={() => { openImagePickerAsync() }}>
             <Icon name="image" type="ionicon" size={24} color={colors.black} />
             <Text style={styles.attachTitle}>Image</Text>

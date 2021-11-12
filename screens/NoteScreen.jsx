@@ -1,25 +1,19 @@
 // Base
-import React, { useEffect, useState, useRef } from 'react'
-import { View, TextInput, Image, StyleSheet, TouchableOpacity, Dimensions, Keyboard, Platform } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { View, StyleSheet, Keyboard, Platform } from 'react-native'
 // Lib
-import { Icon } from 'react-native-elements'
 import BottomSheet from 'reanimated-bottom-sheet'
-// Navigation
-import { useNavigation } from '@react-navigation/core'
+import { Camera } from 'expo-camera'
 // Redux
-import { useDispatch } from 'react-redux'
-import { addNote, deleteNote, updateNote } from '../redux/actions/noteActions'
 import { useSelector } from 'react-redux'
 // Comp
-import Container from '../components/Container'
-import ButtonSmall from '../components/ButtonSmall'
 import NoteScreenBottomSheet from '../components/NoteScreenBottomSheet'
+import TakePicture from '../components/TakePicture'
 // Colors
 import colors from '../constants/colors'
+import NoteForm from '../components/NoteForm'
 
 const NoteScreen = ({ route }) => { 
-  const nav = useNavigation()
-  const dispatch = useDispatch()
   const notes = useSelector(state => state.notes)
   const [snapPoint, setSnapPoint] = useState(500)
   const [actionModal, setActionModal] = useState(false)
@@ -51,34 +45,6 @@ const NoteScreen = ({ route }) => {
     }
   }, [route.params?.noteId])
 
-  // ADD NOTE //
-  const handleAddNote = () => {
-    const newNote = {
-      title: note.title, 
-      body: note.body || '', 
-      pinned: note.pinned,
-      category: note.category,
-      date: note.date,
-      files: note.files
-    }
-    if (route.params?.noteId) {
-      dispatch(updateNote({ noteId: route.params.noteId, note: newNote }))
-    } else if (note.title || note.body || note.files.length > 0) {
-      dispatch(addNote(newNote))
-    }
-    // 
-    nav.goBack()
-  }
-
-  // REMOVE NOTE //
-  const handleRemoveNote = () => {
-    if (route.params?.noteId) {
-      dispatch(deleteNote( route.params.noteId ))
-    }
-    //
-    nav.goBack()
-  }
-
   // BOTTOM SHEET CONTENT //
   const renderContent = () => (
     <View style={{
@@ -88,7 +54,7 @@ const NoteScreen = ({ route }) => {
         <View style={styles.handle}>
           <View style={styles.handleItem} />
         </View>
-        <NoteScreenBottomSheet note={note} setNote={setNote} />
+        <NoteScreenBottomSheet note={note} setNote={setNote} onOpenCamera={onOpenCamera} />
       </View>
     </View>
   )
@@ -115,6 +81,7 @@ const NoteScreen = ({ route }) => {
     }
   }, [])
 
+  // OPTION BUTTON FUNCION
   const handleOptionsButton = () => {
     if (Platform.OS === 'ios') {
       Keyboard.dismiss()
@@ -125,103 +92,45 @@ const NoteScreen = ({ route }) => {
     }
   }
 
-  // 
+  // TAKE A PICTURE //
+  const [openCamera, setOpenCamera] = useState(false)
+  const [hasPermission, setHasPermission] = useState(null)
 
-  const wrapperRef = useRef(null)
-  // useEffect(() => {
-  //   console.log(wrapperRef?.current)
-  // }, [wrapperRef])
+  const onOpenCamera = async () => {
+    const { status } = await Camera.requestCameraPermissionsAsync()
+    setHasPermission(status === 'granted')
+    setOpenCamera(true)
+  }
+  
 
-  return (
-    <View style={{ flex: 1 }}>
+  if (hasPermission === null || !openCamera) {
+    return (
+      <View style={{ flex: 1 }}>
 
-      <Container handlePress={() => { setActionModal(false) }}>
-        <View style={styles.actions}>
-          <View style={styles.actionsLeft}>
-            <ButtonSmall handleChange={handleAddNote} style={styles.actionsButton}>
-              <Icon name="arrow-back-outline" type="ionicon" size={20} />
-            </ButtonSmall>
-
-            <ButtonSmall handleChange={handleRemoveNote}>
-              <Icon name="trash-outline" type="ionicon" size={20} />
-            </ButtonSmall>
-          </View>
-
-          <ButtonSmall handleChange={handleOptionsButton}>
-            <Icon name="options-outline" type="ionicon" size={20} />
-          </ButtonSmall>
-          
-        </View>
-
-        <View>
-          <TextInput
-            style={styles.input}
-            onChangeText={(e) => {
-              setNote((prevState) => ({
-                ...prevState,
-                title: e
-              }))
-            }}
-            value={note.title}
-            placeholder="Note's Title"
-            multiline={true}
-            returnKeyType="done"
-          />
-
-          <TextInput 
-            style={styles.body}
-            onChangeText={(e) => {
-              setNote((prevState) => ({
-                ...prevState,
-                body: e
-              }))
-            }}
-            value={note.body}
-            placeholder="Write your note here..."
-            multiline={true}
-            returnKeyType="done"
-          />
-          {
-            note.files &&
-            <View style={styles.files}>
-              {
-                note.files.map((file) => (
-                  <TouchableOpacity onLongPress={() => {
-                    setNote((prevState) => ({
-                      ...prevState,
-                      files: note.files.filter(newFile => newFile.id != file.id )
-                    }))
-                  }}
-                  key={file.id}>
-                    <Image
-                      source={{ uri: file?.localUri }}
-                      style={{ 
-                        ...styles.thumbnail,
-                        width: ((Dimensions.get('screen').width / 2) - 24),
-                        height: ((Dimensions.get('screen').width / 2) - 24)
-                      }}
-                    />
-                  </TouchableOpacity>
-                ))
-              }
-            </View>
-          }
+        <NoteForm note={note} setNote={setNote} handleOptionsButton={handleOptionsButton} setActionModal={setActionModal} route={route} />
+        
+        <View style={{...styles.actionsModal, opacity: actionModal ? 1 : 0}} pointerEvents={actionModal ? 'auto' : 'none'} >
+          <NoteScreenBottomSheet note={note} setNote={setNote} onOpenCamera={onOpenCamera} />
         </View>
         
-      </Container>
-      <View style={{...styles.actionsModal, opacity: actionModal ? 1 : 0}} pointerEvents={actionModal ? 'auto' : 'none'} >
-        <NoteScreenBottomSheet note={note} setNote={setNote} />
+        <BottomSheet
+          ref={sheetRef}
+          snapPoints={[snapPoint, 0]}
+          initialSnap={1}
+          borderRadius={10}
+          renderContent={renderContent}
+          enabledGestureInteraction={true}
+          enabledContentTapInteraction={false}
+        />
       </View>
-      <BottomSheet
-        ref={sheetRef}
-        snapPoints={[snapPoint, 0]}
-        initialSnap={1}
-        borderRadius={10}
-        renderContent={renderContent}
-        enabledGestureInteraction={true}
-        enabledContentTapInteraction={false}
-      />
-    </View>
+    )
+  }
+  // if (hasPermission === false) {
+  //   return <Text>No access to camera</Text>;
+  // }
+
+  return (
+    <TakePicture note={note} setNote={setNote} setOpenCamera={setOpenCamera} onOpenCamera={onOpenCamera} />
   ) 
 }
 
@@ -300,7 +209,7 @@ const styles = StyleSheet.create({
 
     elevation: 24,
     padding: 24
-  }
+  },
 })
 
 export default NoteScreen
