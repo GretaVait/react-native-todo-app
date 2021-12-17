@@ -5,21 +5,26 @@ import { View, StyleSheet, TouchableOpacity, Text, ImageBackground } from 'react
 import { Camera } from 'expo-camera'
 // Colors
 import colors from '../constants/colors'
+import { useEffect } from 'react'
+import { Icon } from 'react-native-elements/dist/icons/Icon'
+import ButtonSmall from './ButtonSmall'
 
 const TakePicture = ({ note, setNote, setOpenCamera, onOpenCamera }) => {
   const [type, setType] = useState(Camera.Constants.Type.back)
   const [previewVisible, setPreviewVisible] = useState(false)
   const [capturedImage, setCapturedImage] = useState(null)
+  const [loading, setLoading] = useState(false)
 
   let camera = Camera
 
   const onTakePicture = async () => {
+    setLoading(true)
     if (camera) {
       let photo = await camera.takePictureAsync()
       setPreviewVisible(true)
       setCapturedImage(photo)
-      console.log(photo)
     }
+    setLoading(false)
   }
 
   const handleRetakePicture = () => {
@@ -46,6 +51,15 @@ const TakePicture = ({ note, setNote, setOpenCamera, onOpenCamera }) => {
     }))
   }
 
+  const handleCloseCamera = () => {
+    setOpenCamera(false)
+    setPreviewVisible(false)
+  }
+
+  useEffect(() => {
+    console.log(loading, 'loading')
+  }, [loading])
+
   return (
     <View style={{ flex: 1}}>
 
@@ -57,6 +71,11 @@ const TakePicture = ({ note, setNote, setOpenCamera, onOpenCamera }) => {
               flex: 1
             }}
           />
+
+          <ButtonSmall handleChange={handleCloseCamera} style={styles.backButton}>
+            <Icon name="arrow-back-outline" type="ionicon" size={20} />
+          </ButtonSmall>
+
           <View style={styles.cameraActions}>
 
             <TouchableOpacity style={styles.cameraActionButton} onPress={handleRetakePicture}>
@@ -75,6 +94,14 @@ const TakePicture = ({ note, setNote, setOpenCamera, onOpenCamera }) => {
           type={type}
           ref={ref => { camera = ref }} 
         >
+          <ButtonSmall handleChange={handleCloseCamera} style={styles.backButton}>
+            <Icon name="arrow-back-outline" type="ionicon" size={20} />
+          </ButtonSmall>
+          {loading &&
+            <View style={styles.loading} pointerEvents="none">
+              <Icon type="material" name="sync" size={64} color="#FFF" />
+            </View>
+          }
           <TouchableOpacity style={styles.cameraButton} onPress={onTakePicture} />
         </Camera>
       }
@@ -115,6 +142,23 @@ const styles = StyleSheet.create({
   cameraActionButtonText: {
     fontSize: 24,
     color: colors.black
+  },
+  loading: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: colors.black,
+    opacity: .5,
+    zIndex: 2
+  },
+  backButton: {
+    position: 'absolute',
+    left: 16,
+    top: 16
   }
 })
 

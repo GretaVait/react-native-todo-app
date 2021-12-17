@@ -36,7 +36,6 @@ const Note = ({ note: { title, body, date, completed, files, id }, handleComplet
           body != '' &&
             <Text style={styles.noteBody}>{body}</Text>
         }
-        {console.log(files, 'files')}
         {
           files[0]?.localUri &&
             <View style={{ flexDirection: 'row' }}>
