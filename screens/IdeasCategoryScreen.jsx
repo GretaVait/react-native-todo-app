@@ -9,7 +9,6 @@ const IdeasCategoryScreen = ({ navigation }) => {
   const [notesList, setNoteList] = useState([])
 
   useEffect(() => {
-    console.log(notes, 'note')
     const sortedNotes = notes.sort((a, b) => { return b.id - a.id })
 
     setNoteList([

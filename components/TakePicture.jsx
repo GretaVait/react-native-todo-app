@@ -56,10 +56,6 @@ const TakePicture = ({ note, setNote, setOpenCamera, onOpenCamera }) => {
     setPreviewVisible(false)
   }
 
-  useEffect(() => {
-    console.log(loading, 'loading')
-  }, [loading])
-
   return (
     <View style={{ flex: 1}}>
 
