@@ -1,6 +1,6 @@
 // Base
 import React, { useState, useEffect } from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, TextInput } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 // Lib
 import { Icon } from 'react-native-elements'
 import * as ImagePicker from 'expo-image-picker'
@@ -112,7 +112,7 @@ const NoteScreenBottomSheet = ({ note, setNote, onOpenCamera }) => {
         />
       </View>
       
-      <CustomDateTimePicker note={note} setNote={setNote} />
+      {/* <CustomDateTimePicker note={note} setNote={setNote} /> */}
     </View>
   ) 
 }

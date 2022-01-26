@@ -28,12 +28,12 @@ const Category = ({ navigation, title, notes }) => {
   return (
     <View style={{ flex: 1, flexDirection: 'row' }}>
       
-      <Overlay open={overlay} onClose={() => { setOverlay(false) }}>
+      {/* <Overlay open={overlay} onClose={() => { setOverlay(false) }}>
         <OverlayItem 
           title="History"
           icon={{ name: "history", type: "material" }}
         />
-      </Overlay>
+      </Overlay> */}
       
       <View style={{ width: 32 }}>
         <Catgories />
@@ -43,10 +43,10 @@ const Category = ({ navigation, title, notes }) => {
         <View style={styles.header}>
           <Text style={styles.title}>{title}</Text>
 
-          <ButtonSmall handleChange={() => { setOverlay(true) }}>
+          {/* <ButtonSmall handleChange={() => { setOverlay(true) }}>
             <View style={{ ...styles.menuLine, marginBottom: 4 }} />
             <View style={styles.menuLine} />
-          </ButtonSmall>
+          </ButtonSmall> */}
 
         </View>
 

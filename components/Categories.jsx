@@ -10,7 +10,7 @@ import { toggleCategory } from '../redux/actions/categoryActions'
 // Colors
 import colors from '../constants/colors'
 
-const Catgories = ({ active }) => {
+const Catgories = () => {
   const nav = useNavigation()
   const dispatch = useDispatch()
   const category = useSelector(state => state.category)
@@ -47,16 +47,16 @@ const Catgories = ({ active }) => {
       <View>
         {
           data.map(item => (
-            <TouchableOpacity key={item.id} style={{ ...styles.category, backgroundColor: category.activeItem === item.title ? '#FFF' : item.color }} onPress={() => { handleCategoryPress(item.screen, item.title) }}>
+            <TouchableOpacity key={item.id} style={{ ...styles.category, backgroundColor: category.activeItem.toLowerCase() === item.title.toLowerCase() ? '#FFF' : item.color }} onPress={() => { handleCategoryPress(item.screen, item.title) }}>
               <Text style={styles.categoryText}>{item.title}</Text>
             </TouchableOpacity>
           ))
         }
       </View>
 
-      <TouchableOpacity style={{ ...styles.category, backgroundColor: '#DEDEDE', marginBottom: 0 }} onPress={() => { nav.navigate('SettingsScreen') }}>
+      {/* <TouchableOpacity style={{ ...styles.category, backgroundColor: '#DEDEDE', marginBottom: 0 }} onPress={() => { nav.navigate('SettingsScreen') }}>
         <Text style={styles.categoryText}>Settings</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
 
     </View>
   ) 

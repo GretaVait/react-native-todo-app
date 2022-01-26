@@ -1,5 +1,5 @@
 // Base
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, Platform, Modal } from 'react-native'
 // Lib
 import DateTimePickerModal from "react-native-modal-datetime-picker"
