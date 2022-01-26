@@ -9,15 +9,12 @@ import { useNavigation } from '@react-navigation/core'
 import colors from '../constants/colors'
 // Comp
 import Container from '../components/Container'
-import ButtonSmall from '../components/ButtonSmall'
 import Note from '../components/Note'
 import Catgories from '../components/Categories'
+import Title from '../components/Title'
 // Redux
 import { completeNote } from '../redux/actions/noteActions'
 import { useDispatch } from 'react-redux'
-import Title from '../components/Title'
-import Overlay from '../components/Overlay'
-import OverlayItem from '../components/OverlayItem'
 
 const Category = ({ navigation, title, notes }) => { 
   const nav = useNavigation()
